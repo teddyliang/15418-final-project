@@ -31,8 +31,9 @@
     </section>
 
     <section id="url" class="container">
-        <h2>URL</h2>
-        <p></p>
+        <h2>URLs</h2>
+        <p><a href="project_proposal.pdf">Proposal</a>
+        </p>
     </section>
 
     <section id="background" class="container">
@@ -42,11 +43,13 @@
 
     <section id="challenge" class="container">
         <h2>The Challenge</h2>
-        <p>Parallelizing the B&B algorithm presents several challenges:
-            - Dynamic Workload Distribution: Ensuring even workload distribution is complicated by the algorithm's variable branch sizes and computation times.
-            - Synchronization and Communication: Implementing efficient communication through MPI to synchronize the global state among processors is crucial and challenging, given the overhead it can introduce.
-            </p>
+        <p>Parallelizing the B&B algorithm presents several challenges:</p>
+        <ul>
+            <li><strong>Dynamic Workload Distribution:</strong> Ensuring even workload distribution is complicated by the algorithm's variable branch sizes and computation times.</li>
+            <li><strong>Synchronization and Communication:</strong> Implementing efficient communication through MPI to synchronize the global state among processors is crucial and challenging, given the overhead it can introduce.</li>
+        </ul>
     </section>
+    
 
     <section id="resources" class="container">
         <h2>Resources</h2>
@@ -55,16 +58,22 @@
 
     <section id="goals" class="container">
         <h2>Goals and Deliverables</h2>
-        <p>Plan to Achieve:
-            - Successfully implement a parallel B&B algorithm using MPI and C++ that demonstrates substantial performance improvements over its sequential counterpart.
-            - Analyze and report on the performance metrics, emphasizing speedup and efficiency across various processor configurations.
-          Hope to Achieve: 
-            - Implement advanced dynamic workload balancing and synchronization techniques for performance optimization.
-            - Extend the project to include GPU parallelization with CUDA or multi-threading with OpenMP, comparing these approaches against our initial MPI implementation in terms of performance and scalability.
-          
-          The demonstration will feature a performance comparison between the parallel and sequential versions of the B&B algorithm, illustrating the efficiency gains and detailing the parallelization strategies used. If extended to GPU or OpenMP, we will also present comparative analyses of these implementations.
-          </p>
+        
+        <h3>Plan to Achieve:</h3>
+        <ul>
+            <li>Successfully implement a parallel B&B algorithm using MPI and C++ that demonstrates substantial performance improvements over its sequential counterpart.</li>
+            <li>Analyze and report on the performance metrics, emphasizing speedup and efficiency across various processor configurations.</li>
+        </ul>
+        
+        <h3>Hope to Achieve:</h3>
+        <ul>
+            <li>Implement advanced dynamic workload balancing and synchronization techniques for performance optimization.</li>
+            <li>Extend the project to include GPU parallelization with CUDA or multi-threading with OpenMP, comparing these approaches against our initial MPI implementation in terms of performance and scalability.</li>
+        </ul>
+        
+        <p>The demonstration will feature a performance comparison between the parallel and sequential versions of the B&B algorothm, illustrating the efficiency gains and detailing the parallelization strategies used. If extended to GPU or OpenMP, we will also present comparative analyses of these implementations.</p>
     </section>
+    
 
     <section id="platform" class="container">
         <h2>Platform Choice</h2>
@@ -73,13 +82,15 @@
 
     <section id="schedule" class="container">
         <h2>Schedule</h2>
-        <p>- Week 1: Write a sequential B&B version for baseline.
-            - Week 2: Begin developing the parallel B&B algortihm using MPI and C++.
-            - Week 3: Continue development and start initial performance testing.
-            - Week 4: Focus on dynamic workload balancing, synchronization enhancements, and continue optimization processes. Prepare groundwork for potential GPU or OpenMP extensions.
-            - Week 5: Conduct final performance assessments on PSC and complete optimizations.
-            </p>
+        <ul>
+            <li>Week 1: Write a sequential B&B version for baseline.</li>
+            <li>Week 2: Begin developing the parallel B&B algorithm using MPI and C++.</li>
+            <li>Week 3: Continue development and start initial performance testing.</li>
+            <li>Week 4: Focus on dynamic workload balancing, synchronization enhancements, and continue optimization processes. Prepare groundwork for potential GPU or OpenMP extensions.</li>
+            <li>Week 5: Conduct final performance assessments on PSC and complete optimizations.</li>
+        </ul>
     </section>
+    
 
     <footer>
         <p>Parallel Integer Linear Program Solvers &copy; 2024</p>
