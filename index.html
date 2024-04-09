@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Project Title</title>
+    <title>Parallel Chess AI Engine</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
         <div class="container">
-            <h1>Parallel Integer Linear Program Solvers</h1>
+            <h1>Parallel Chess AI Engine</h1>
         </div>
     </header>
 
@@ -27,7 +27,7 @@
 
     <section id="summary" class="container">
         <h2>Summary</h2>
-        <p>We aim to parallelize the Branch and Bound (B&B) algorithm for Integer Linear Programming (ILP) using the Message Passing Interface (MPI) and C++. This endeavor will focus on optimizing the algorithm's workload distribution and synchronization across multi-core processors to cut down computation times for complex ILP cases significantly. Given adequate progress, we plan to extend our parallelization efforts to GPU implementation or leverage OpenMP for comparison.</p>
+        <p>Our project focuses on the development of a parallel chess AI, leveraging the power of C++ and the OpenMP framework to accelerate the decision-making process in chess. The core objective is to significantly reduce the time required for move selection by distributing computations across multiple threads.</p>
     </section>
 
     <section id="url" class="container">
@@ -38,22 +38,31 @@
 
     <section id="background" class="container">
         <h2>Background</h2>
-        <p>Solving an ILP is known to be NP-hard, indicating that no known algorithm can solve all ILP problems in polynomial time. This complexity arises because solving an ILP requires exploring a potentially exponential number of variable combinations to find the optimal solution. The Branch and Bound (B&B) algorithm systematically explores the solution space by branching into subproblems and bounding their potential to contain an optimal solution, effectively pruning the search space. However, it is computationally expensive due to the extensive search process and the complexity of managing and pruning the search tree, especially as the size of the problem increases. Parallelizing this process could make solving large-scale ILPs more computationally feasible.</p>
+        <p>If we want a chess engine to evaluate the best move by looking 3 or 4 moves deeper into the future, the number of possible board states grows exponentially as the depth increases. The heart of our chess AI lies in its ability to explore a vast array of potential moves and their resulting positions, a task managed by the combination of the minimax algorithm and alpha-beta pruning techniques. The minimax algorithm serves as the foundation, guiding the AI in simulating moves and counter-moves to deduce the most advantageous path. Alpha-beta pruning further refines this process, eliminating less promising branches early on, thereby reducing the computational load and focusing resources on more critical analyses.
+        </p>
+        <p>
+        The main opportunity for parallelism is in the search for the best move. The game tree, representing potential moves and their outcomes, is inherently expansive. Our approach involves dissecting this tree into multiple branches at the root level, each assigned to a separate thread for exploration. This division allows simultaneous traversal of different parts of the game tree, significantly enhancing the breadth and depth of the search within the same computational time frame. By parallelizing the search, we dramatically increase the number of positions analyzed within a given time, directly contributing to more strategic and informed decision-making by the AI. This can significantly reduce the time needed to make an informed decision. It can also allow the chess AI to look farther into the future in the same amount of time compared to a sequential version, allowing it to choose better moves.
+        </p>
+        <p>
+        Upon reaching leaf nodes or positions requiring evaluation, the computation of heuristic values for these positions presents another opportunity for parallelism. Given that each position's evaluation is independent, we can allocate subsets of these positions to different threads, thereby accelerating the cumulative assessment process.
+        </p>
     </section>
 
     <section id="challenge" class="container">
         <h2>The Challenge</h2>
-        <p>Parallelizing the B&B algorithm presents several challenges:</p>
-        <ul>
-            <li><strong>Dynamic Workload Distribution:</strong> Ensuring even workload distribution is complicated by the algorithm's variable branch sizes and computation times.</li>
-            <li><strong>Synchronization and Communication:</strong> Implementing efficient communication through MPI to synchronize the global state among processors is crucial and challenging, given the overhead it can introduce.</li>
-        </ul>
+        <p>Parallelizing a chess AI poses several challenges that stem from both the nature of the game and the intricacies of parallel computing.</p>
+        <p>
+        One challenge is that the minimax algorithm with alpha-beta pruning relies on a tree structure where each node (board position) depends on the evaluation of its child nodes. This inherent dependency complicates parallelization because the value of a parent node cannot be determined until all its children are evaluated, introducing synchronization points that can limit parallel efficiency. Furthermore, different branches of the game tree can have vastly different complexities and depths, leading to divergent execution paths among parallel threads. Some threads might quickly reach a pruning point or a shallow depth, while others might need to explore deeper, more complex branches, resulting in workload imbalance. This leads to challenges with mapping the workload effectively so that threads have similar amounts of work.
+        </p>
+        <p>
+        Chess AI involves frequent access to the game state, move history, and potentially transposition tables, which is caching of previously evaluated positions. Ensuring memory locality can be challenging but crucial for performance, especially given the potential for a high volume of random memory accesses. The need for threads to synchronize at various points, especially when using alpha-beta pruning, can lead to a high communication-to-computation ratio. Efficiently managing this ratio is critical to ensuring that the overhead of communication does not outweigh the benefits of parallel computation.
+        </p>
     </section>
     
 
     <section id="resources" class="container">
         <h2>Resources</h2>
-        <p>This project will be developed on a multi-core CPU system, employing MPI for processor communication and C++ for its high performance and flexibility. </p>
+        <p>We will be building our chess AI system from scratch. We plan on using the ghc cluster machines, using varying numbers of cores to test our system. One resource we will use the wikipedia page about <a href="https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning">alpha-beta pruning</a>. We may also want to use machines with thread counts higher than 8 like the PSC machines in order to have a better understanding of how well the parallelism works. </p>
     </section>
 
     <section id="goals" class="container">
@@ -61,39 +70,80 @@
         
         <h3>Plan to Achieve:</h3>
         <ul>
-            <li>Successfully implement a parallel B&B algorithm using MPI and C++ that demonstrates substantial performance improvements over its sequential counterpart.</li>
-            <li>Analyze and report on the performance metrics, emphasizing speedup and efficiency across various processor configurations.</li>
+            <li>Develop a chess AI using OpenMP and C++ that improves move selection speed by at least 4x compared to a sequential version on 8 cores. This should be achievable since the ideal for 8 cores is 8x speedup</li>
+            <li>Ensure the AI uses a parallel version of the minimax algorithm with alpha-beta pruning</li>
+            <li>Use standard chess engine test suites to confirm the AI follows chess rules and makes logical moves.</li>
         </ul>
-        
+        <p>If work goes more slowly, we aim to still have a correct parallel chess AI that can achieve at least 2x speedup.</p>
+
         <h3>Hope to Achieve:</h3>
         <ul>
-            <li>Implement advanced dynamic workload balancing and synchronization techniques for performance optimization.</li>
-            <li>Extend the project to include GPU parallelization with CUDA or multi-threading with OpenMP, comparing these approaches against our initial MPI implementation in terms of performance and scalability.</li>
+            <li> Implementing a parallel board evaluation function, if exploration of it seems good</li>
+            <li>Achieve 6x speedup on 8 cores with optimizations to the parallelism</li>
+            <li>Incorporate further techniques for more parallelism and/or reduced search space</li>
+            <li>Achieve at least 10x speedup with higher core counts</li>
         </ul>
-        
-        <p>The demonstration will feature a performance comparison between the parallel and sequential versions of the B&B algorothm, illustrating the efficiency gains and detailing the parallelization strategies used. If extended to GPU or OpenMP, we will also present comparative analyses of these implementations.</p>
+
+        <h3>Demo Plan for Poster Session:</h3>
+        <ul>
+            <li>Allow attendees to play against the AI, showcasing real-time decision-making</li>
+            <li>Display speedup graphs comparing the parallel AI to its sequential counterpart</li>
+            <li>Show how the parallel algorithm navigates the game tree</li>
+        </ul>
+
+        <h3>Analysis Goals:</h3>
+        <ul>
+            <li>Evaluate the scalability of the parallel AI with increasing cores and identify bottlenecks</li>
+            <li>Document the journey of parallelization and explain how we iterated on our code to improve parallelism</li>
+            <li>Use chess engine metrics to assess how parallelization and heuristics impact the AI's gameplay strength</li>
+        </ul>
     </section>
     
 
     <section id="platform" class="container">
         <h2>Platform Choice</h2>
-        <p>MPI and C++ are chosen for their comprehensive support for parallel and distributed computing, ideal for the complex task of parallelizing the B&B algorithm. MPI excels in managing communication in distributed systems, while C++ provides the necessary control over computation and data management. Should time permit, exploring GPU parallelization with CUDA or multi-threading with OpenMP will offer insights into different parallel computing paradigms and their suitability for ILP problem-solving.</p>
+        <p>C++ offers high-performance computing capabilities important for the intensive calculations of a chess AI. OpenMP works well for our project since we can use it to distribute branches to different cores.</p>
     </section>
 
     <section id="schedule" class="container">
         <h2>Schedule</h2>
         <ul>
-            <li>Week 1: Write a sequential B&B version for baseline.</li>
-            <li>Week 2: Begin developing the parallel B&B algorithm using MPI and C++.</li>
-            <li>Week 3: Continue development and start initial performance testing.</li>
-            <li>Week 4: Focus on dynamic workload balancing, synchronization enhancements, and continue optimization processes. Prepare groundwork for potential GPU or OpenMP extensions.</li>
-            <li>Week 5: Conduct final performance assessments on PSC and complete optimizations.</li>
+            <li>
+                Week 1:
+                <ul>
+                    <li>Implement basic chess engine components (board setup, piece movements).</li>
+                    <li>Develop serial versions of the minimax algorithm and alpha-beta pruning. (May go into week 2)</li>
+                </ul>
+            </li>
+            <li>
+                Week 2:
+                <ul>
+                    <li>Implement evaluation function for board positions.</li>
+                    <li>Parallelize the search algorithm using OpenMP.</li>
+                </ul>
+            </li>
+            <li>
+                Week 3:
+                <ul>
+                    <li>Optimize the parallel search for load balancing and efficiency.</li>
+                    <li>Explore parallelizing the evaluation function.</li>
+                    <li>If have time, explore further techniques to improve parallelism or reduce search space.</li>
+                </ul>
+            </li>
+            <li>
+                Week 4: Testing, Debugging, and Final Adjustments
+                <ul>
+                    <li>Conduct thorough testing, and identify and fix bugs.</li>
+                    <li>Final performance optimizations and prepare project documentation.</li>
+                </ul>
+            </li>
         </ul>
     </section>
     
+    
 
     <footer>
-        <p>Parallel Integer Linear Program Solvers &copy; 2024</p>
+        <p>Parallel Chess AI Engine &copy; 2024</p>
     </footer>
 </body>
 </html>
