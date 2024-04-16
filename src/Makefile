@@ -3,7 +3,7 @@ CXX = g++
 CXXFLAGS = -std=c++11 -Wall -Wextra
 
 # Source files
-SOURCES = main.cpp bitboards.cpp
+SOURCES = main.cpp bitboards.cpp evaluation.cpp 
 OBJECTS = $(SOURCES:.cpp=.o)
 
 # Executable name

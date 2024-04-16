@@ -335,3 +335,94 @@ void undoMove(const Move& move) {
     allPieces = whitePawns | whiteKnights | whiteBishops | whiteRooks | whiteQueens | whiteKing |
                 blackPawns | blackKnights | blackBishops | blackRooks | blackQueens | blackKing;
 }
+
+int alphaBeta(int depth, int alpha, int beta, bool isMaximizingPlayer) {
+    if (depth == 0) {
+        return evaluateBoard();  // Terminal node evaluation
+    }
+
+    if (isMaximizingPlayer) {
+        int maxValue = std::numeric_limits<int>::min();
+        std::vector<Move> moves = generateLegalMoves(true);
+        for (const Move& move : moves) {
+            makeMove(move);
+            int value = alphaBeta(depth - 1, alpha, beta, false);
+            undoMove(move);
+            maxValue = std::max(maxValue, value);
+            alpha = std::max(alpha, maxValue);
+            if (beta <= alpha) {
+                break;  // Beta pruning
+            }
+        }
+        return maxValue;
+    } else {
+        int minValue = std::numeric_limits<int>::max();
+        std::vector<Move> moves = generateLegalMoves(false);
+        for (const Move& move : moves) {
+            makeMove(move);
+            int value = alphaBeta(depth - 1, alpha, beta, true);
+            undoMove(move);
+            minValue = std::min(minValue, value);
+            beta = std::min(beta, minValue);
+            if (beta <= alpha) {
+                break;  // Alpha pruning
+            }
+        }
+        return minValue;
+    }
+}
+
+
+Move findBestMove(int depth, bool isWhite) {
+    int bestValue = isWhite ? std::numeric_limits<int>::min() : std::numeric_limits<int>::max();
+    Move bestMove;
+    std::vector<Move> moves = generateLegalMoves(isWhite);
+
+    for (const Move& move : moves) {
+        makeMove(move);
+        int moveValue = alphaBeta(depth - 1, std::numeric_limits<int>::min(), std::numeric_limits<int>::max(), !isWhite);
+        undoMove(move);
+
+        if (isWhite && moveValue > bestValue || !isWhite && moveValue < bestValue) {
+            bestValue = moveValue;
+            bestMove = move;
+        }
+    }
+
+    return bestMove;
+}
+
+
+std::vector<Move> generateLegalMoves(bool isWhite) {
+    std::vector<Move> moves;
+    uint64_t ourPieces = isWhite ? (whitePawns | whiteKnights | whiteBishops | whiteRooks | whiteQueens | whiteKing)
+                                 : (blackPawns | blackKnights | blackBishops | blackRooks | blackQueens | blackKing);
+    uint64_t opponentPieces = isWhite ? (blackPawns | blackKnights | blackBishops | blackRooks | blackQueens | blackKing)
+                                      : (whitePawns | whiteKnights | whiteBishops | whiteRooks | whiteQueens | whiteKing);
+    
+    // Example: Generating moves for the king (simplistic and not handling check/castling)
+    uint64_t kings = isWhite ? whiteKing : blackKing;
+    while (kings) {
+        int from = getLSB(kings);
+        std::array<int, 8> directions = {-9, -8, -7, -1, 1, 7, 8, 9}; // King moves in all directions
+        for (int dir : directions) {
+            int to = from + dir;
+            if (to >= 0 && to < 64 && !(ourPieces & (1ULL << to))) { // Basic bounds and capture checking
+                moves.push_back(Move(from, to, isWhite ? WHITE_KING : BLACK_KING));
+            }
+        }
+        kings &= kings - 1; // Remove this king from the set
+    }
+
+    return moves;
+}
+
+bool hasLegalMoves(bool isWhite);//TODO
+
+bool gameOver() {
+    if (!hasLegalMoves(true) || !hasLegalMoves(false)) {
+        std::cout << "No legal moves available." << std::endl;
+        return true;
+    }
+    return false;
+}
