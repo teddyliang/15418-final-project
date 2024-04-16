@@ -9,7 +9,6 @@ uint64_t blackPawns, blackKnights, blackBishops, blackRooks, blackQueens, blackK
 uint64_t allPieces;
 
 
-
 // Function to set a bit in a bitboard
 uint64_t setBit(uint64_t bitboard, int position) {
     return bitboard | (1ULL << position);

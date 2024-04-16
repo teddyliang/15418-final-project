@@ -46,13 +46,13 @@ int main() {
     // }
 
     // return 0;
-    // std::cout << "first move" << std::endl;
-    // Move move = Move(8,16,WHITE_PAWN);
-    // makeMove(move);
-    // printWholeBoard();
-    // std::cout << "undo first move" << std::endl;
-    // undoMove(move);
-    // printWholeBoard();
+    std::cout << "first move" << std::endl;
+    Move move = Move(8,16,WHITE_PAWN);
+    makeMove(move);
+    printWholeBoard();
+    std::cout << "undo first move" << std::endl;
+    undoMove(move);
+    printWholeBoard();
     std::cout << "castle king side move (not legal but just checking bitboards)" << std::endl;
     Move castleKing = Move(4,6,WHITE_KING, NO_PIECE, CASTLE, NO_PIECE);
     makeMove(castleKing);
